@@ -34,8 +34,7 @@ export default function PageOrder() {
   const results = useQueries([
     {
       queryKey: ["order", { id }],
-      queryFn: async () =>
-        httpGet<Order>(`${API_PATHS.order}/order/${id}`),
+      queryFn: async () => httpGet<Order>(`${API_PATHS.order}/order/${id}`),
     },
     {
       queryKey: "products",

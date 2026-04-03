@@ -12,6 +12,28 @@ export default defineConfig({
       "~": path.resolve(__dirname, "src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) {
+            return;
+          }
+          if (id.includes("@mui") || id.includes("@emotion")) {
+            return "mui";
+          }
+          if (
+            id.includes("node_modules/react-dom") ||
+            id.includes("node_modules/react/") ||
+            id.includes("react-router")
+          ) {
+            return "react";
+          }
+          return "vendor";
+        },
+      },
+    },
+  },
   plugins: [react()],
   test: {
     globals: true,
