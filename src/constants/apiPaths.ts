@@ -44,12 +44,8 @@ function resolve(
   if (import.meta.env.DEV) {
     return stripTrailingSlash(devFallback);
   }
-  if (import.meta.env.PROD) {
-    // eslint-disable-next-line no-console -- intentional build-time hint
-    console.error(
-      `[apiPaths] Missing ${key} or VITE_API_BASE. Add a .env.production (see .env.example) before npm run build.`
-    );
-  }
+  // Production without env: inert host so requests fail quietly in Network tab
+  // (no console spam for end users). Configure VITE_API_* — see `.env.example`.
   return "https://missing-api-env.invalid";
 }
 

@@ -9,8 +9,7 @@ module.exports = {
   parserOptions: {
     // Absolute paths + tsconfigRootDir so resolution does not depend on shell cwd.
     // Do not use a cwd-based "infra/**/*.ts" override: from `infra/`, paths are `lib/...`
-    // and would miss the override, falling back to root tsconfig (`bundler`) and breaking
-    // parsers that only allow node16/nodenext.
+    // and would miss the override, falling back to the wrong tsconfig.
     project: [
       path.join(repoRoot, "tsconfig.json"),
       path.join(repoRoot, "infra", "tsconfig.json"),
