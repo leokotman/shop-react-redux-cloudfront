@@ -1,7 +1,9 @@
 import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { Link as RouterLink } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { formatAsPrice } from "~/utils/utils";
@@ -23,17 +25,25 @@ export default function Products() {
           <Card
             sx={{ height: "100%", display: "flex", flexDirection: "column" }}
           >
-            <CardMedia
-              sx={{ pt: "56.25%" }}
-              image={`https://source.unsplash.com/random?sig=${index}`}
-              title="Image title"
-            />
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography gutterBottom variant="h5" component="h2">
-                {product.title}
-              </Typography>
-              <Typography>{formatAsPrice(product.price)}</Typography>
-            </CardContent>
+            <CardActionArea
+              component={RouterLink}
+              to={`/product/${encodeURIComponent(product.id ?? "")}`}
+            >
+              <CardMedia
+                sx={{ pt: "56.25%" }}
+                image={`https://source.unsplash.com/random?sig=${index}`}
+                title="Image title"
+              />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {product.title}
+                </Typography>
+                <Typography>{formatAsPrice(product.price)}</Typography>
+                <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
+                  View details
+                </Typography>
+              </CardContent>
+            </CardActionArea>
             <CardActions>
               <AddProductToCart product={product} />
             </CardActions>
