@@ -4,12 +4,13 @@ import {
   aws_s3,
   aws_s3_deployment,
   CfnOutput,
+  RemovalPolicy,
 } from "aws-cdk-lib";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { Construct } from "constructs";
 
-/** Vite output from the React app (`npm run build` at repository root). */
+/** Vite build output (run `npm run build` at repo root). Required for synth/deploy/destroy. */
 const webAppBuildDir = path.join(__dirname, "..", "..", "dist");
 
 export class DeploymentService extends Construct {
@@ -19,12 +20,15 @@ export class DeploymentService extends Construct {
     if (!fs.existsSync(webAppBuildDir)) {
       throw new Error(
         `Frontend static assets not found at ${webAppBuildDir}. ` +
-          "Run `npm run build` from the repository root (parent of `infra/`) first, then run `cdk synth`."
+          "Run `npm run build` from the repository root (parent of `infra/`) first. " +
+          "CDK runs your app for `cdk destroy` too, so the asset path must exist.",
       );
     }
 
     const hostingBucket = new aws_s3.Bucket(this, "FrontendBucket", {
       blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     const distribution = new aws_cloudfront.Distribution(
@@ -34,7 +38,7 @@ export class DeploymentService extends Construct {
         defaultBehavior: {
           origin:
             aws_cloudfront_origins.S3BucketOrigin.withOriginAccessControl(
-              hostingBucket
+              hostingBucket,
             ),
           viewerProtocolPolicy:
             aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -47,7 +51,7 @@ export class DeploymentService extends Construct {
             responsePagePath: "/index.html",
           },
         ],
-      }
+      },
     );
 
     new aws_s3_deployment.BucketDeployment(this, "BucketDeployment", {

@@ -43,7 +43,7 @@ export const products: Product[] = [
 ];
 
 export const availableProducts: AvailableProduct[] = products.map(
-  (product, index) => ({ ...product, count: index + 1 })
+  (product, index) => ({ ...product, count: index + 1 }),
 );
 
 export const cart: CartItem[] = [
