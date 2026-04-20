@@ -13,26 +13,10 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) {
-            return;
-          }
-          if (id.includes("@mui") || id.includes("@emotion")) {
-            return "mui";
-          }
-          if (
-            id.includes("node_modules/react-dom") ||
-            id.includes("node_modules/react/") ||
-            id.includes("react-router")
-          ) {
-            return "react";
-          }
-          return "vendor";
-        },
-      },
-    },
+    // Avoid manualChunks: splitting React/MUI from other deps (react-query,
+    // formik, shared libs) creates circular chunks where `import { R as I } from
+    // "./react-mui.js"` is still undefined during vendor top-level init
+    // (I.createContext → TypeError). Default chunking keeps a consistent graph.
   },
   plugins: [react()],
   test: {
