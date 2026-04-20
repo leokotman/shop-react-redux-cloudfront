@@ -6,7 +6,7 @@ import { HttpError, httpGetAuthorized, httpPutJson } from "~/utils/http";
 
 export function useCart() {
   return useQuery<CartItem[], HttpError>("cart", async () =>
-    httpGetAuthorized<CartItem[]>(`${API_PATHS.cart}/profile/cart`)
+    httpGetAuthorized<CartItem[]>(`${API_PATHS.cart}/profile/cart`),
   );
 }
 
@@ -19,7 +19,7 @@ export function useInvalidateCart() {
   const queryClient = useQueryClient();
   return React.useCallback(
     () => queryClient.invalidateQueries("cart", { exact: true }),
-    []
+    [],
   );
 }
 
@@ -28,7 +28,7 @@ export function useUpsertCart() {
     httpPutJson<CartItem, CartItem[]>(
       `${API_PATHS.cart}/profile/cart`,
       values,
-      true
-    )
+      true,
+    ),
   );
 }

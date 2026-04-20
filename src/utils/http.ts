@@ -3,7 +3,7 @@ export class HttpError extends Error {
   constructor(
     message: string,
     public readonly status: number,
-    public readonly body?: unknown
+    public readonly body?: unknown,
   ) {
     super(message);
     this.name = "HttpError";
@@ -53,7 +53,7 @@ export async function httpGetAuthorized<T>(url: string): Promise<T> {
 export async function httpPutJson<TBody, TRes = unknown>(
   url: string,
   body: TBody,
-  withAuthorization = false
+  withAuthorization = false,
 ): Promise<TRes> {
   const res = await fetch(url, {
     method: "PUT",
@@ -68,7 +68,7 @@ export async function httpPutJson<TBody, TRes = unknown>(
 
 export async function httpDelete(
   url: string,
-  withAuthorization = false
+  withAuthorization = false,
 ): Promise<void> {
   const res = await fetch(url, {
     method: "DELETE",

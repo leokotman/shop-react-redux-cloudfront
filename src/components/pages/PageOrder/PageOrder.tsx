@@ -39,7 +39,7 @@ export default function PageOrder() {
     {
       queryKey: "products",
       queryFn: async () =>
-        httpGet<AvailableProduct[]>(`${API_PATHS.bff}/product/available`),
+        httpGet<AvailableProduct[]>(`${API_PATHS.product}/products`),
     },
   ]);
   const [
@@ -85,7 +85,7 @@ export default function PageOrder() {
           onSubmit={(values) =>
             updateOrderStatus(
               { id: order.id, ...values },
-              { onSuccess: () => invalidateOrder(order.id) }
+              { onSuccess: () => invalidateOrder(order.id) },
             )
           }
         >

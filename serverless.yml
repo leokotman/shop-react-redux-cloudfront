@@ -19,7 +19,8 @@ plugins:
 
 custom:
   client:
-    bucketName: my-store-app
+    # S3 bucket names are globally unique; include account id to avoid collisions
+    bucketName: my-store-app-${aws:accountId}
     distributionFolder: dist
   s3BucketName: ${self:custom.client.bucketName}
 
@@ -36,7 +37,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.s3BucketName}
-        AccessControl: PublicRead
+        # Public access via CloudFront OAI only (ACLs not used; modern S3 defaults)
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
