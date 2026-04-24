@@ -19,7 +19,26 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.delay(),
-      ctx.json<AvailableProduct[]>(availableProducts)
+      ctx.json<AvailableProduct[]>(availableProducts),
+    );
+  }),
+  /** Product Service (CDK): PLP + product by id — same shape as `availableProducts` */
+  rest.get(`${API_PATHS.product}/products`, (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.delay(),
+      ctx.json<AvailableProduct[]>(availableProducts),
+    );
+  }),
+  rest.get(`${API_PATHS.product}/products/:id`, (req, res, ctx) => {
+    const product = availableProducts.find((p) => p.id === req.params.id);
+    if (!product) {
+      return res(ctx.status(404), ctx.json({ message: "Product not found" }));
+    }
+    return res(
+      ctx.status(200),
+      ctx.delay(),
+      ctx.json<AvailableProduct>(product),
     );
   }),
   rest.get(`${API_PATHS.bff}/product/:id`, (req, res, ctx) => {
@@ -30,7 +49,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.delay(),
-      ctx.json<AvailableProduct>(product)
+      ctx.json<AvailableProduct>(product),
     );
   }),
   rest.get(`${API_PATHS.cart}/profile/cart`, (req, res, ctx) => {

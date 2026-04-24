@@ -19,7 +19,7 @@ export default function AddProductToCart({ product }: AddProductToCartProps) {
   const addProduct = () => {
     upsertCart(
       { product, count: cartItem ? cartItem.count + 1 : 1 },
-      { onSuccess: invalidateCart }
+      { onSuccess: invalidateCart },
     );
   };
 
@@ -27,7 +27,7 @@ export default function AddProductToCart({ product }: AddProductToCartProps) {
     if (cartItem) {
       upsertCart(
         { ...cartItem, count: cartItem.count - 1 },
-        { onSuccess: invalidateCart }
+        { onSuccess: invalidateCart },
       );
     }
   };
