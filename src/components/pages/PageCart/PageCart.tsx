@@ -47,7 +47,7 @@ export default function PageCart() {
   const { mutate: submitOrder } = useSubmitOrder();
   const invalidateCart = useInvalidateCart();
   const [activeStep, setActiveStep] = React.useState<CartStep>(
-    CartStep.ReviewCart
+    CartStep.ReviewCart,
   );
   const [address, setAddress] = useState<Address>(initialAddressValues);
 

@@ -26,7 +26,7 @@ function resolve(
     | "VITE_API_IMPORT"
     | "VITE_API_PRODUCT",
   devFallback: string,
-  fallbackEnv?: "VITE_API_BFF"
+  fallbackEnv?: "VITE_API_BFF",
 ): string {
   if (sharedBase) {
     return stripTrailingSlash(sharedBase);

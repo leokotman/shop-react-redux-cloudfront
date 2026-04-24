@@ -26,7 +26,7 @@ function Providers({ children }: { children: React.ReactElement }) {
 
 export function renderWithProviders(
   ui: React.ReactElement,
-  options?: RenderOptions
+  options?: RenderOptions,
 ) {
   return render(ui, { wrapper: Providers, ...options });
 }
