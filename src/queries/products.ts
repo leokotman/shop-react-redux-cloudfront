@@ -56,7 +56,12 @@ export function useUpsertAvailableProduct() {
 /** Creates a product via Product Service (DynamoDB). Body matches CDK POST /products. */
 export function useCreateProductOnProductService() {
   return useMutation(
-    (values: Pick<AvailableProduct, "title" | "description" | "price" | "count">) =>
+    (
+      values: Pick<
+        AvailableProduct,
+        "title" | "description" | "price" | "count"
+      >,
+    ) =>
       httpPostJson<
         Pick<AvailableProduct, "title" | "description" | "price" | "count">,
         AvailableProduct

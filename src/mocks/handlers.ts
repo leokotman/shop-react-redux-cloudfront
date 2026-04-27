@@ -41,8 +41,11 @@ export const handlers = [
       ctx.json<AvailableProduct>(product),
     );
   }),
-  rest.post(`${API_PATHS.product}/products`, async (req, res, ctx) => {
-    const body = (await req.json()) as Partial<AvailableProduct>;
+  rest.post(`${API_PATHS.product}/products`, (req, res, ctx) => {
+    const raw = req.body;
+    const body = (
+      typeof raw === "string" ? JSON.parse(raw) : raw
+    ) as Partial<AvailableProduct>;
     const created: AvailableProduct = {
       id: crypto.randomUUID(),
       title: String(body.title ?? ""),
