@@ -8,6 +8,7 @@ import PaperLayout from "~/components/PaperLayout/PaperLayout";
 import Typography from "@mui/material/Typography";
 import {
   useAvailableProduct,
+  useCreateProductOnProductService,
   useInvalidateAvailableProducts,
   useRemoveProductCache,
   useUpsertAvailableProduct,
@@ -22,21 +23,30 @@ export default function PageProductForm() {
   const removeProductCache = useRemoveProductCache();
   const { data, isLoading } = useAvailableProduct(id);
   const { mutateAsync: upsertAvailableProduct } = useUpsertAvailableProduct();
+  const { mutateAsync: createOnProductService } =
+    useCreateProductOnProductService();
   const onSubmit = (values: AvailableProduct) => {
     const formattedValues = AvailableProductSchema.cast(values);
-    const productToSave = id
-      ? {
-          ...formattedValues,
-          id,
-        }
-      : formattedValues;
-    return upsertAvailableProduct(productToSave, {
-      onSuccess: () => {
-        invalidateAvailableProducts();
-        removeProductCache(id);
-        navigate("/admin/products");
+    if (id) {
+      const productToSave = { ...formattedValues, id };
+      return upsertAvailableProduct(productToSave, {
+        onSuccess: () => {
+          invalidateAvailableProducts();
+          removeProductCache(id);
+          navigate("/admin/products");
+        },
+      });
+    }
+    const { title, description, price, count } = formattedValues;
+    return createOnProductService(
+      { title, description, price, count },
+      {
+        onSuccess: () => {
+          invalidateAvailableProducts();
+          navigate("/admin/products");
+        },
       },
-    });
+    );
   };
 
   return (
