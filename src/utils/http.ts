@@ -66,6 +66,22 @@ export async function httpPutJson<TBody, TRes = unknown>(
   return handleResponse<TRes>(res);
 }
 
+export async function httpPostJson<TBody, TRes = unknown>(
+  url: string,
+  body: TBody,
+  withAuthorization = false,
+): Promise<TRes> {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(withAuthorization ? getAuthHeaders() : {}),
+    },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<TRes>(res);
+}
+
 export async function httpDelete(
   url: string,
   withAuthorization = false,
