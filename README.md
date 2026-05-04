@@ -3,7 +3,7 @@
 Deployments:
 S3 url: http://deploywebappstack-deploymentfrontendbucket67ceb713-gql6sycqcyni.s3-website.eu-central-1.amazonaws.com
 Cloudfront:
-https://d30ru290rd1ptx.cloudfront.net/
+https://d103spim25iszm.cloudfront.net/
 
 This is frontend starter project for nodejs-aws mentoring program. It uses the following technologies:
 

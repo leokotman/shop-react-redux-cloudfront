@@ -41,6 +41,20 @@ export const handlers = [
       ctx.json<AvailableProduct>(product),
     );
   }),
+  rest.post(`${API_PATHS.product}/products`, (req, res, ctx) => {
+    const raw = req.body;
+    const body = (
+      typeof raw === "string" ? JSON.parse(raw) : raw
+    ) as Partial<AvailableProduct>;
+    const created: AvailableProduct = {
+      id: crypto.randomUUID(),
+      title: String(body.title ?? ""),
+      description: String(body.description ?? ""),
+      price: Number(body.price ?? 0),
+      count: Number(body.count ?? 0),
+    };
+    return res(ctx.status(201), ctx.delay(), ctx.json(created));
+  }),
   rest.get(`${API_PATHS.bff}/product/:id`, (req, res, ctx) => {
     const product = availableProducts.find((p) => p.id === req.params.id);
     if (!product) {

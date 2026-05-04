@@ -2,7 +2,13 @@ import API_PATHS from "~/constants/apiPaths";
 import { AvailableProduct } from "~/models/Product";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import React from "react";
-import { HttpError, httpDelete, httpGet, httpPutJson } from "~/utils/http";
+import {
+  HttpError,
+  httpDelete,
+  httpGet,
+  httpPostJson,
+  httpPutJson,
+} from "~/utils/http";
 
 export function useAvailableProducts() {
   return useQuery<AvailableProduct[], HttpError>(
@@ -44,6 +50,22 @@ export function useUpsertAvailableProduct() {
       values,
       true,
     ),
+  );
+}
+
+/** Creates a product via Product Service (DynamoDB). Body matches CDK POST /products. */
+export function useCreateProductOnProductService() {
+  return useMutation(
+    (
+      values: Pick<
+        AvailableProduct,
+        "title" | "description" | "price" | "count"
+      >,
+    ) =>
+      httpPostJson<
+        Pick<AvailableProduct, "title" | "description" | "price" | "count">,
+        AvailableProduct
+      >(`${API_PATHS.product}/products`, values, false),
   );
 }
 
