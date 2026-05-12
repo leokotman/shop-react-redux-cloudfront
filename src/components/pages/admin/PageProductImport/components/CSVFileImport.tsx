@@ -25,14 +25,33 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   const uploadFile = async () => {
     console.log("uploadFile to", url);
 
-    // Get the presigned URL, then PUT the file (native fetch):
-    // const presignRes = await fetch(
-    //   `${url}?name=${encodeURIComponent(file.name)}`
-    // );
-    // const uploadUrl = await presignRes.text();
-    // const result = await fetch(uploadUrl, { method: "PUT", body: file });
-    // console.log("Result: ", result);
-    // setFile("");
+    if (!file) return;
+
+    try {
+      // Get the presigned URL from the Lambda
+      const presignRes = await fetch(
+        `${url}?name=${encodeURIComponent(file.name)}`
+      );
+      if (!presignRes.ok) {
+        throw new Error(`Failed to get presigned URL: ${presignRes.status}`);
+      }
+      const { url: uploadUrl } = await presignRes.json();
+      console.log("Got presigned URL:", uploadUrl);
+
+      // PUT the file to S3
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": "text/csv" },
+      });
+      if (!uploadRes.ok) {
+        throw new Error(`S3 upload failed: ${uploadRes.status}`);
+      }
+      console.log("File uploaded successfully");
+      setFile(undefined);
+    } catch (err) {
+      console.error("Upload error:", err);
+    }
   };
   return (
     <Box>
