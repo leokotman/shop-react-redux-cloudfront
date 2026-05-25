@@ -28,12 +28,45 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     if (!file) return;
 
     try {
+      // Try to get Cognito ID token first
+      let authToken = localStorage.getItem('cognito_id_token');
+      let authHeader = '';
+      
+      if (authToken) {
+        authHeader = `Bearer ${authToken}`;
+      } else {
+        // Fall back to Basic auth token
+        const basicToken = localStorage.getItem('authorization_token');
+        if (basicToken) {
+          authHeader = `Basic ${basicToken}`;
+        }
+      }
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      // Add Authorization header if token exists
+      if (authHeader) {
+        headers['Authorization'] = authHeader;
+      }
+
       // Get the presigned URL from the Lambda
       const presignRes = await fetch(
-        `${url}?name=${encodeURIComponent(file.name)}`
+        `${url}?name=${encodeURIComponent(file.name)}`,
+        {
+          headers,
+        }
       );
       if (!presignRes.ok) {
-        throw new Error(`Failed to get presigned URL: ${presignRes.status}`);
+        if (presignRes.status === 401) {
+          alert('Unauthorized: Please provide valid credentials. Missing or invalid authorization token.');
+        } else if (presignRes.status === 403) {
+          alert('Forbidden: Access denied. Invalid credentials provided.');
+        } else {
+          throw new Error(`Failed to get presigned URL: ${presignRes.status}`);
+        }
+        return;
       }
       const { url: uploadUrl } = await presignRes.json();
       console.log("Got presigned URL:", uploadUrl);

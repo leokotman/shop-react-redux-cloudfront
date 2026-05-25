@@ -15,10 +15,26 @@ function getAuthHeaders(): Record<string, string> {
     if (typeof localStorage?.getItem !== "function") {
       return {};
     }
+    
+    // Try to get Cognito ID token first
+    const cognitoIdToken = localStorage.getItem("cognito_id_token");
+    if (cognitoIdToken) {
+      return { Authorization: `Bearer ${cognitoIdToken}` };
+    }
+    
+    // Fall back to Basic auth token
     const token = localStorage.getItem("authorization_token");
     return token ? { Authorization: `Basic ${token}` } : {};
   } catch {
     return {};
+  }
+}
+
+function handleAuthError(status: number): void {
+  if (status === 401) {
+    alert("Unauthorized: You don't have permission to access this resource. Please log in.");
+  } else if (status === 403) {
+    alert("Forbidden: Access denied. Your credentials are invalid or insufficient.");
   }
 }
 
@@ -33,6 +49,12 @@ async function handleResponse<T>(res: Response): Promise<T> {
         body = text;
       }
     }
+    
+    // Handle auth errors
+    if (res.status === 401 || res.status === 403) {
+      handleAuthError(res.status);
+    }
+    
     throw new HttpError(`HTTP ${res.status}`, res.status, body);
   }
   if (!text) {
