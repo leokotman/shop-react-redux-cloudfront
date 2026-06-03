@@ -7,6 +7,7 @@ import PageProductImport from "~/components/pages/admin/PageProductImport/PagePr
 import PageCart from "~/components/pages/PageCart/PageCart";
 import PageProducts from "~/components/pages/PageProducts/PageProducts";
 import PageProductDetail from "~/components/pages/PageProductDetail/PageProductDetail";
+import PageLogin from "~/components/pages/PageLogin/PageLogin";
 import { Typography } from "@mui/material";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <MainLayout>
       <Routes>
         <Route path="/" element={<PageProducts />} />
+        <Route path="/login" element={<PageLogin />} />
         <Route path="product/:id" element={<PageProductDetail />} />
         <Route path="cart" element={<PageCart />} />
         <Route path="admin/orders">

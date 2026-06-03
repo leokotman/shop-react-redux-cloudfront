@@ -28,12 +28,32 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     if (!file) return;
 
     try {
+      const authorizationToken = localStorage.getItem('authorization_token');
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (authorizationToken) {
+        headers['Authorization'] = `Basic ${authorizationToken}`;
+      }
+
       // Get the presigned URL from the Lambda
       const presignRes = await fetch(
-        `${url}?name=${encodeURIComponent(file.name)}`
+        `${url}?name=${encodeURIComponent(file.name)}`,
+        {
+          headers,
+        }
       );
       if (!presignRes.ok) {
-        throw new Error(`Failed to get presigned URL: ${presignRes.status}`);
+        if (presignRes.status === 401) {
+          alert('Unauthorized: Please provide valid credentials. Missing or invalid authorization token.');
+        } else if (presignRes.status === 403) {
+          alert('Forbidden: Access denied. Invalid credentials provided.');
+        } else {
+          throw new Error(`Failed to get presigned URL: ${presignRes.status}`);
+        }
+        return;
       }
       const { url: uploadUrl } = await presignRes.json();
       console.log("Got presigned URL:", uploadUrl);
