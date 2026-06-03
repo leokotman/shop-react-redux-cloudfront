@@ -28,27 +28,14 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     if (!file) return;
 
     try {
-      // Try to get Cognito ID token first
-      let authToken = localStorage.getItem('cognito_id_token');
-      let authHeader = '';
-      
-      if (authToken) {
-        authHeader = `Bearer ${authToken}`;
-      } else {
-        // Fall back to Basic auth token
-        const basicToken = localStorage.getItem('authorization_token');
-        if (basicToken) {
-          authHeader = `Basic ${basicToken}`;
-        }
-      }
+      const authorizationToken = localStorage.getItem('authorization_token');
 
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
       };
       
-      // Add Authorization header if token exists
-      if (authHeader) {
-        headers['Authorization'] = authHeader;
+      if (authorizationToken) {
+        headers['Authorization'] = `Basic ${authorizationToken}`;
       }
 
       // Get the presigned URL from the Lambda

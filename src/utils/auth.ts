@@ -6,13 +6,33 @@ const AUTH_TOKEN_KEY = 'authorization_token';
 const AUTH_USERNAME_KEY = 'auth_username';
 const AUTH_PASSWORD_KEY = 'auth_password';
 
+function encodeBase64(value: string): string {
+  const bytes = new TextEncoder().encode(value);
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  let encoded = '';
+
+  for (let index = 0; index < bytes.length; index += 3) {
+    const chunk =
+      (bytes[index] << 16) |
+      ((bytes[index + 1] ?? 0) << 8) |
+      (bytes[index + 2] ?? 0);
+
+    encoded += alphabet[(chunk >> 18) & 63];
+    encoded += alphabet[(chunk >> 12) & 63];
+    encoded += index + 1 < bytes.length ? alphabet[(chunk >> 6) & 63] : '=';
+    encoded += index + 2 < bytes.length ? alphabet[chunk & 63] : '=';
+  }
+
+  return encoded;
+}
+
 /**
  * Generate a Base64-encoded Basic Authorization token
  * Format: base64(username:password)
  */
 export function generateAuthorizationToken(username: string, password: string): string {
   const credentials = `${username}:${password}`;
-  return Buffer.from(credentials).toString('base64');
+  return encodeBase64(credentials);
 }
 
 /**
@@ -56,14 +76,3 @@ export function clearAuthorizationToken(): void {
   }
 }
 
-/**
- * Initialize default authorization token
- * This sets up a default token for the test user
- */
-export function initializeDefaultAuthorizationToken(): void {
-  const token = getAuthorizationToken();
-  if (!token) {
-    // Default test credentials
-    storeAuthorizationToken('leokotman', 'TEST_PASSWORD');
-  }
-}
