@@ -78,6 +78,13 @@ export default function Header() {
               >
                 Manage products
               </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/login"
+                onClick={handleClose}
+              >
+                Login
+              </MenuItem>
             </Menu>
           </div>
         )}
